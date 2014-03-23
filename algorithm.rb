@@ -1,6 +1,20 @@
 # encoding: utf-8
+require 'json'
+
+# FOR NOW
+require '../ruby_to_robust/lib/to_robust'
+
+require_relative 'errors'
 require_relative 'operators'
 require_relative 'evaluator'
+require_relative 'grammar'
+
+require_relative 'functions'
+
+# Enable all the core error handling strategies.
+ToRobust::Global.strategies << ToRobust::Global::Strategies::DivideByZeroStrategy.new
+ToRobust::Global.strategies << ToRobust::Global::Strategies::NoMethodErrorStrategy.new(5)
+ToRobust::Global.strategies << ToRobust::Global::Strategies::WrongArgumentsErrorStrategy.new
 
 # ==== Options
 # [+population_size+]     The size of the population.
@@ -12,21 +26,34 @@ require_relative 'evaluator'
 # [+tournament_size+]     The size of tournaments.
 # [+mutation_rate+]       The mutation rate.
 # [+crossover_rate+]      The crossove rate.
+# [+measure+]             The name of the robustness measure to use.
+# [+benchmark+]           The name of the benchmark function to use.
 def evolve(parameters = {})
 
   values = 0..2_147_483_647
   num_offspring = opts[:population_size] - opts[:elites]
 
+  # Load the benchmark function samples.
+  samples = JSON.load(File.open("#{File.dirname(__FILE__)}/samples.json", 'rb')).freeze
+
+  # Determine the number of arguments to the target function.
+  vars = samples[opts[:benchmark]][0].length == 3 ? ['x', 'y'] : ['x']
+
   # Calculate division of labour for breeding.
   batch_size = (num_offspring / opts[:breeding_threads].to_f).ceil
-  batches = Array.new(threads) do |t|
+  batches = Array.new(opts[:breeding_threads]) do |t|
     start_at = t * batch_size
     end_at = [num_offspring, start_at + batch_size].min
     [t, start_at, end_at]
   end
 
+  # Construct the soft grammar.
+  grammar = Grammar.new('program',
+    JSON.load(File.open("#{File.dirname(__FILE__)}/grammar.json", 'rb')))
+  grammar['var'] = vars
+
   # Setup the RNGs.
-  threads =[opts[:breeding_threads], opts[:evaluation_threads]].max
+  threads = [opts[:breeding_threads], opts[:evaluation_threads]].max
   random = Array.new(threads) { Random.new }
 
   # Initialise the population.
@@ -36,6 +63,11 @@ def evolve(parameters = {})
 
   # Evaluate the population and find the best solution.
   num_evaluations = evaluate!(population,
+    benchmark: opts[:benchmark],
+    measure: opts[:measure],
+    samples: opts[:samples],
+    grammar: grammar,
+    evaluation_threads: opts[:evaluation_threads],
     num_evaluations: 0,
     evaluation_limit: opts[:evaluation_limit])
   best_individual = population.min
@@ -90,6 +122,10 @@ def evolve(parameters = {})
     # Evaluate the newly created offspring and compare the best individual
     # against the best found so far during the evolution.
     num_evaluations += evaluate!(offspring,
+      benchmark: opts[:benchmark],
+      measure: opts[:measure],
+      samples: opts[:samples],
+      grammar: grammar,
       num_evaluations: num_evaluations,
       evaluation_limit: opts[:evaluation_limit])
     best_offspring = offspring.min
