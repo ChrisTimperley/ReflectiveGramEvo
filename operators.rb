@@ -14,6 +14,19 @@ end
 # Destructively performs two-point crossover on two given chromosomes.
 def crossover!(random, rate, c1, c2)
   
+  # Perform crossover operation on a set proportion of requests.
+  return unless rate <= random.rand
+
+  # Calculate crossover points X and Y, then swap the substrings between
+  # the two input chromosomes at those loci.
+  x = random.rand(1...([c1.length, c2.length].min - 1))
+  y = rng.rand(x...([c1.length, c2.length].min))
+
+  # Use a temporary buffer to perform the swap.
+  t = c1[x...y]
+  c1[x...y] = c2[x...y]
+  c2[x...y] = t
+
 end
 
 # Performs tournament selection.
