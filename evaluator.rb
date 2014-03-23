@@ -58,7 +58,7 @@ def evaluate!(candidates, opts = {})
   # as many as possible.
 	evals_remaining = opts[:evaluation_limit] - num_evaluations
 	if evals_remaining > candidates
-		candidates = candidates.shuffle.[0...evals_remaining]
+		candidates = candidates.shuffle[0...evals_remaining]
 	end
 
   # Extract the samples and variable set for the benchmark.
@@ -75,7 +75,7 @@ def evaluate!(candidates, opts = {})
         grammar: opts[:grammar],
         measure: opts[:measure])
       c.fitness = samples.reduce(0) do |sum, sample|
-        sum += lm[*sample[0...-1]] - sample[-1])**2
+        sum += (lm[*sample[0...-1]] - sample[-1])**2
       end
     rescue StandardError
       c.fitness = Float::Infinity
