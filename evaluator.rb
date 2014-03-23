@@ -34,7 +34,6 @@ end
 # reached.
 #
 # ==== Parameters
-# [+random+]            A list of random number generators.
 # [+candidates+]        A list of candidates to evaluate.
 # [+opts+]              A hash of keyword options to this method.
 #
@@ -50,7 +49,7 @@ end
 #
 # ==== Returns
 # The number of evaluations that were performed.
-def evaluate!(candidates, num_evaluations, opts = {})
+def evaluate!(candidates, opts = {})
 
   # If there are more candidate solutions than there are remaining
   # evaluations, then shuffle the list of candidates and evaluate
@@ -77,7 +76,7 @@ def evaluate!(candidates, num_evaluations, opts = {})
         sum += lm[*sample[0...-1]] - sample[-1])**2
       end
     rescue StandardError
-      c.fitness = Infinity
+      c.fitness = Float::Infinity
     end
   end
 
