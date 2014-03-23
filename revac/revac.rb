@@ -1,5 +1,4 @@
 # encoding: utf-8
-require 'matrix'
 
 # Load the necessary operators.
 require_relative 'operators'

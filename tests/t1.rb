@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require_relative '../algorithm'
+require_relative '../rge/algorithm'
 
 # [+population_size+]     The size of the population.
 # [+length+]              The length of integer sequences.
@@ -18,10 +18,10 @@ evolve(
   length: 100,
   evaluation_threads: 8,
   breeding_threads: 8,
-  evaluation_limit: 20_000,
-  elites: 1,
+  evaluation_limit: 1_000_000,
+  elites: 0,
   tournament_size: 2,
-  mutation_rate: 0.01,
-  crossover_rate: 0.9,
-  measure: 'Global',
+  mutation_rate: 0.10,
+  crossover_rate: 0.7,
+  measure: 'None',
   benchmark: 'keijzer-15')
