@@ -35,6 +35,10 @@ def evolve(opts = {})
   values = 0..2_147_483_647
   num_offspring = opts[:population_size] - opts[:elites]
 
+  # Ensure that only a single thread is used for evaluation if local
+  # robustness is being used.
+  opts[:evaluation_theads] = 1 if opts[:measure] == 'Local'
+
   # Load the benchmark function samples.
   samples = JSON.load(File.open("#{File.dirname(__FILE__)}/samples.json", 'rb')).freeze
 
@@ -72,6 +76,7 @@ def evolve(opts = {})
     evaluation_threads: opts[:evaluation_threads],
     num_evaluations: 0,
     evaluation_limit: opts[:evaluation_limit])
+
   best_individual = population.min
   generations = 0
 
@@ -80,7 +85,7 @@ def evolve(opts = {})
 
     # Keep generating individuals until we run out of space.
     offspring = Array.new(num_offspring, nil)
-    batches.peach do |t, start_at, end_at|
+    batches.peach(opts[:breeding_threads]) do |t, start_at, end_at|
       until start_at == end_at
         
         # Select and clone two parents from the existing population.
@@ -130,6 +135,7 @@ def evolve(opts = {})
       grammar: grammar,
       num_evaluations: num_evaluations,
       evaluation_limit: opts[:evaluation_limit])
+
     best_offspring = offspring.min
     best_individual = best_offspring if best_offspring < best_individual
 
