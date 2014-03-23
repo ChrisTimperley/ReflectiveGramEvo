@@ -46,6 +46,8 @@ end
 # [+grammar+]             The grammar being used by the evolution.
 # [+max_wraps+]           The maximum number of times the genome should
 #                         be wrapped during derivation.
+# [+samples+]             The set of samples from each benchmark function
+#                         to use for regression.
 #
 # ==== Returns
 # The number of evaluations that were performed.
