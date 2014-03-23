@@ -26,3 +26,9 @@ def replace!(population, offspring, num_elites)
   population[0...num_elites] = (population.sort)[0...num_elites]
   population[num_elites...-1] = offspring.[0...population.size - num_elites]
 end
+
+# Spawns a new individual containing a integer sequence of a given
+# length at uniform random.
+def spawn(random, length, values)
+  Individual.new(Array.new(length) { values.sample(random: random) })
+end
