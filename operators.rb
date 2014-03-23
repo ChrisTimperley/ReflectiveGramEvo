@@ -6,7 +6,7 @@
 # Performs uniform mutation on a given chromosome (destructively).
 def mutate!(random, rate, values, chromosome)
   chromosome.each_index do |i|
-    chromosome[i] = values.sample(random: random) if random.rand <= rate
+    chromosome[i] = random.rand(values) if random.rand <= rate
   end
 end
 
@@ -19,7 +19,7 @@ def crossover!(random, rate, c1, c2)
   # Calculate crossover points X and Y, then swap the substrings between
   # the two input chromosomes at those loci.
   x = random.rand(1...([c1.length, c2.length].min - 1))
-  y = rng.rand(x...([c1.length, c2.length].min))
+  y = random.rand(x...([c1.length, c2.length].min))
 
   # Use a temporary buffer to perform the swap.
   t = c1[x...y]
@@ -42,5 +42,5 @@ end
 # Spawns a new individual containing a integer sequence of a given
 # length at uniform random.
 def spawn(random, length, values)
-  Individual.new(Array.new(length) { values.sample(random: random) })
+  Individual.new(Array.new(length) { random.rand(values) })
 end
