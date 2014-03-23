@@ -125,7 +125,7 @@ class Grammar
     until queue.empty?
       token = queue.shift
       
-      if token.is_a? Wallace::GE::Literal
+      if token.is_a?(Literal)
         derivation << token.value
       else
         options = @rules[token.value]
