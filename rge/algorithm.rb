@@ -3,7 +3,7 @@ require 'json'
 require 'peach'
 
 # FOR NOW
-require_relative '../ruby_to_robust/lib/to_robust'
+require_relative '../../ruby_to_robust/lib/to_robust'
 
 require_relative 'errors'
 require_relative 'operators'
@@ -148,5 +148,7 @@ def evolve(opts = {})
 
   end
 
+  # Return the best individual found during the evolution.
+  return best_individual
 
 end
