@@ -1,8 +1,9 @@
 # encoding: utf-8
 require 'json'
+require 'peach'
 
 # FOR NOW
-require '../ruby_to_robust/lib/to_robust'
+require_relative '../ruby_to_robust/lib/to_robust'
 
 require_relative 'errors'
 require_relative 'operators'
@@ -29,7 +30,7 @@ ToRobust::Global.strategies << ToRobust::Global::Strategies::WrongArgumentsError
 # [+crossover_rate+]      The crossove rate.
 # [+measure+]             The name of the robustness measure to use.
 # [+benchmark+]           The name of the benchmark function to use.
-def evolve(parameters = {})
+def evolve(opts = {})
 
   values = 0..2_147_483_647
   num_offspring = opts[:population_size] - opts[:elites]
@@ -49,9 +50,9 @@ def evolve(parameters = {})
   end
 
   # Construct the soft grammar.
-  grammar = Grammar.new('program',
-    JSON.load(File.open("#{File.dirname(__FILE__)}/grammar.json", 'rb')))
+  grammar = JSON.load(File.open("#{File.dirname(__FILE__)}/grammar.json", 'rb'))
   grammar['var'] = vars
+  grammar = Grammar.new('program', grammar)
 
   # Setup the RNGs.
   threads = [opts[:breeding_threads], opts[:evaluation_threads]].max
@@ -66,7 +67,7 @@ def evolve(parameters = {})
   num_evaluations = evaluate!(population,
     benchmark: opts[:benchmark],
     measure: opts[:measure],
-    samples: opts[:samples],
+    samples: samples,
     grammar: grammar,
     evaluation_threads: opts[:evaluation_threads],
     num_evaluations: 0,
@@ -125,7 +126,7 @@ def evolve(parameters = {})
     num_evaluations += evaluate!(offspring,
       benchmark: opts[:benchmark],
       measure: opts[:measure],
-      samples: opts[:samples],
+      samples: samples,
       grammar: grammar,
       num_evaluations: num_evaluations,
       evaluation_limit: opts[:evaluation_limit])
