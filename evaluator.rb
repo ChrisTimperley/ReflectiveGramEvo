@@ -23,9 +23,9 @@ def compile(sequence, grammar, opts = {})
   derivation = grammar.derive(sequence, max_wraps: opts[:max_wraps])
   case opts[:measure]
   when 'Global'
-    return ToRobust::Global::GlobalRobustLambda(opts[:variables], derivation)
+    return ToRobust::Global::GlobalRobustLambda.new(opts[:variables], derivation)
   when 'Local'
-    return ToRobust::Local::LocalRobustLambda(opts[:variables], derivation, [FunC])
+    return ToRobust::Local::LocalRobustLambda.new(opts[:variables], derivation, [FunC])
   else
     return derivation.to_lambda(opts[:variables])
   end
@@ -79,7 +79,7 @@ def evaluate!(candidates, opts = {})
       c.fitness = samples.reduce(0) do |sum, sample|
         sum += (lm[*sample[0...-1]] - sample[-1])**2
       end
-    rescue StandardError
+    rescue StandardError => e
       c.fitness = Float::INFINITY
     end
   end
