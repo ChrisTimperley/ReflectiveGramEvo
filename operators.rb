@@ -6,9 +6,8 @@
 # Performs uniform mutation on a given chromosome (destructively).
 def mutate!(random, rate, values, chromosome)
   chromosome.each_index do |i|
-  chromosome[i] = values.sample(random: random) if random.rand <= rate
+    chromosome[i] = values.sample(random: random) if random.rand <= rate
   end
-  return chromosome
 end
 
 # Destructively performs two-point crossover on two given chromosomes.
