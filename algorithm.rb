@@ -8,6 +8,7 @@ require_relative 'errors'
 require_relative 'operators'
 require_relative 'evaluator'
 require_relative 'grammar'
+require_relative 'individual'
 
 require_relative 'functions'
 
