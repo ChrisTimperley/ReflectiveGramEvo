@@ -35,10 +35,10 @@ end
 #
 # ==== Parameters
 # [+candidates+]        A list of candidates to evaluate.
-# [+num_evaluations+]   The number of evaluations performed so far.
 # [+opts+]              A hash of keyword options to this method.
 #
 # ==== Options
+# [+num_evaluations+]   The number of evaluations performed so far.
 # [+evaluation_limit+]  The maximum number of evaluations.
 # [+measure+]           The robustness measure being used.
 # [+benchmark+]         The benchmark function being used.
