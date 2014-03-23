@@ -10,17 +10,21 @@ Parameter = Struct.new(:name, :range)
 # Tunes a given algorithm using REVAC.
 #
 # ==== Parameters
-# [+opts+]  A hash of keyword options to this method.
+# [+opts+]        A hash of keyword options to this method.
+# [+&algorithm+]  A lambda function which takes a hash of named parameters
+#                 as its input, uses them to perform a given algorithm,
+#                 and returns the fitness of the best individual found.
 #
 # ==== Options
-# [+parameters+]      A list of parameters to optimise. Each entry in the list
-#                     contains the name of the parameter and the range of values
-#                     that it can take.
-# [+iteration_limit+] The maximum number of iterations to perform.
-# [+num_parents+]     The number of parents to use when creating each child.
-# [+runs+]            The number of runs to perform for each vector.
-# [+vectors+]         The number of parameter vectors in the population.
-def revac(opts = {})
+# [+parameters+]        A list of parameters to optimise. Each entry in the
+#                       list contains the name of the parameter and the range
+#                       of values that it can take.
+# [+evaluations+]       The maximum number of evaluations to perform.
+# [+parents+]           The number of parents to use when creating each child.
+# [+runs+]              The number of runs to perform for each vector.
+# [+vectors+]           The number of parameter vectors in the population.
+# [+h+]                 The radius of the partial marginal density function.
+def revac(opts = {}, &algorithm)
 
   # The RNG to use during optimisation.
   random = Random.new
@@ -31,14 +35,20 @@ def revac(opts = {})
 
   # Draw an initial set of parameter vectors at uniform random from
   # their initial distributions.
-  table = Matrix.build(opts[:vectors], parameters.length) do |v, p|
-    random.rand(opts[:parameters][p].range)
+  table = Array.new(opts[:vectors]) do
+    parameters.map { |p| random.rand(p.range) }
   end
 
   # Compute the utility of each parameter vector.
-  utility = calculate_utility(table)
+  utility = table.map { |v| evaluate_vector(v, &algorithm, opts[:runs]) }
 
-  until iterations == opts[:iteration_limit]
+  # Initialise evolution statistics.
+  oldest = 0
+  iterations = 0
+  evaluations = opts[:vectors]
+
+  # Keep optimising until the termination condition is met.
+  until evaluations == opts[:evaluations]
     
     # Select the N-best vectors from the table as the parents
     # of the next parameter vector.
@@ -49,10 +59,29 @@ def revac(opts = {})
     # a proto-child vector.
     child = multi_parent_crossover(random, parents)
 
-    # Compute the utility of the new parameter vector and insert
-    # it into the "youngest" row of the table.
-    utility[0] = evaluate_vector(vector, algorithm, opts[:runs])
+    # Replace the oldest vector from the population with this
+    # proto-child vector, before mutating it and computing its
+    # utility.
+    table[oldest] = child
+    table[oldest] = revac_mutate(random, table, oldest, opts[:h])
+    utility[child_index] = evaluate_vector(child, &algorithm, opts[:runs])
+
+    # Update evolution statistics.
+    oldest = (oldest + 1) % opts[:vectors]
+    iterations += 1
+    evaluations += 1
+
+    # Log the vector table and the utility function values.
+    #
+    #
+    #
+    #
+    #
+    #
+    #
 
   end
+
+
 
 end
