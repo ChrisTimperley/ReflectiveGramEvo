@@ -13,8 +13,8 @@ class Individual
   end
 
   def <=>(other)
-    return 1 if fitness.nil?
-    return -1 if other.fitness.nil?
+    return 1 if fitness.nil? || fitness.infinite? || fitness.nan?
+    return -1 if other.fitness.nil? || other.fitness.infinite? || other.fitness.nan?
     return fitness <=> other.fitness
   end
 
