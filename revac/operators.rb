@@ -3,7 +3,7 @@
 # Performs a multi-parent crossover on a list of parent chromosomes to produce
 # a new chromosome.
 def multi_parent_crossover(random, parents)
-  Array.new(parents[0].length) { parents[random.rand(parents.length)][i] }
+  Array.new(parents[0].length) { |i| parents[random.rand(parents.length)][i] }
 end
 
 # Performs REVAC mutation on an individual at a given index within the vector
@@ -25,7 +25,11 @@ def revac_mutate(random, table, index, h)
   return Array.new(table[0].length) do |i|
     window = (0...table.length).sort { |x, y| table[x][i] <=> table[y][i] }
     position = window.find_index(index)
-    window = window[[position - h, 0].max][i] .. window[[position + h, table[0].length].max][i]
+    window = [
+      window[[position - h, 0].max],
+      window[[position + h, table.length - 1].min]
+    ]
+    window = table[window[0]][i] .. table[window[1]][i]
     random.rand(window)
   end
   
