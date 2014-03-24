@@ -127,8 +127,6 @@ def evolve(opts = {})
       end
     end
 
-    puts "Finished breeding."
-
     # Evaluate the newly created offspring and compare the best individual
     # against the best found so far during the evolution.
     num_evaluations += evaluate!(offspring,
