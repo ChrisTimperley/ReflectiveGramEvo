@@ -1,6 +1,5 @@
 # encoding: utf-8
-
-require 'json'
+require 'CSV'
 
 # Load the necessary operators.
 require_relative 'operators'
@@ -8,28 +7,18 @@ require_relative 'evaluator'
 
 Parameter = Struct.new(:name, :range)
 
-# Logs the parameter vector table and utility function values for the current
-# generation and adds them to both the output file and the output buffer.
+# Logs a parameter vector and its associated utility function value using
+# a given CSV file.
 #
 # ==== Parameters
-# [+path+]      The path to the output JSON file.
-# [+iteration+] The current iteration.
-# [+table+]     The parameter vector table.
-# [+utility+]   The utility vector.
-# [+buffer+]    The output buffer.
-#
-# ==== Returns
-# An updated output buffer.
-def revac_log(path, iteration, table, utility, buffer)
-  File.open(path, 'w') do |file|
-    buffer[:iterations][iteration] = {
-      iteration: iteration,
-      utility: utility.clone,
-      table: table.map { |v| v.clone }
-    }
-    file.write(JSON.pretty_generate(buffer))
+# [+path+]        The path to the output JSON file.
+# [+evaluation+]  The current evaluation.
+# [+vector+]      The parameter vector table.
+# [+utility+]     The utility of the given vector.
+def revac_log(path, evaluation, vector, utility)
+  CSV.open(path, 'ab') do |f|
+    f << [evaluation] + vector + [utility]
   end
-  return buffer
 end
 
 # Tunes a given algorithm using REVAC.
@@ -66,6 +55,16 @@ def revac(parameters, opts = {}, &algorithm)
   # objects.
   parameters = parameters.map { |n, r| Parameter.new(n, r) }
 
+  # Initialise evolution statistics.
+  oldest = 0
+  iterations = 0
+  evaluations = 0
+
+  # Initialise the output CSV file.
+  CSV.open(opts[:output], 'wb') do |f|
+    f << ['Evaluation'] + parameters.map { |p| p.name } + ['Utility']
+  end
+
   # Draw an initial set of parameter vectors at uniform random from
   # their initial distributions.
   table = Array.new(opts[:vectors]) do
@@ -75,22 +74,13 @@ def revac(parameters, opts = {}, &algorithm)
   # Compute the utility of each parameter vector, before finding and recording
   # the best parameter vector.
   utility = table.map do |v|
-    evaluate_vector(v, parameters, algorithm, opts[:runs])
+    u = evaluate_vector(v, parameters, algorithm, opts[:runs])
+    revac_log(opts[:output], evaluations, v, u)
+    evaluations += 1
+    u
   end
   best_utility, best_vector = utility.each_with_index.min
   best_vector = table[best_vector]
-
-  # Initialise evolution statistics.
-  oldest = 0
-  iterations = 0
-  evaluations = opts[:vectors]
-
-  # Log the details of the initial population.
-  output_buffer = revac_log(opts[:output],
-    iterations,
-    table,
-    utility,
-    {iterations: []})
 
   # Keep optimising until the termination condition is met.
   until evaluations == opts[:evaluations]
@@ -120,17 +110,11 @@ def revac(parameters, opts = {}, &algorithm)
       best_utility = utility[oldest]
     end
 
-    # Update evolution statistics.
-    oldest = (oldest + 1) % opts[:vectors]
+    # Update evolution statistics and perform logging.
     iterations += 1
     evaluations += 1
-
-    # Log the vector table and the utility function values.
-    output_buffer = revac_log(opts[:output],
-      iterations,
-      table,
-      utility,
-      output_buffer)
+    revac_log(opts[:output], evaluations, child, utility[oldest])
+    oldest = (oldest + 1) % opts[:vectors]
 
     # Debugging.
     puts "Generation #{iterations}: #{best_utility}"
