@@ -30,6 +30,7 @@ ToRobust::Global.strategies << ToRobust::Global::Strategies::WrongArgumentsError
 # [+crossover_rate+]      The crossove rate.
 # [+measure+]             The name of the robustness measure to use.
 # [+benchmark+]           The name of the benchmark function to use.
+# [+silent+]              If this flag is set to true, no console output is produced.
 def evolve(opts = {})
 
   values = 0..2_147_483_647
@@ -143,8 +144,10 @@ def evolve(opts = {})
     replace!(population, offspring, opts[:elites])
     generations += 1
 
-    # DEBUGGING
-    puts "Generation #{generations}: #{best_individual.fitness}"
+    # Console output.
+    unless opts[:silent]
+      puts "Generation #{generations}: #{best_individual.fitness}"
+    end
 
   end
 
