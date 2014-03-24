@@ -36,7 +36,7 @@ end
 # Destructively performs replacement on the population.
 def replace!(population, offspring, num_elites)
   population[0...num_elites] = (population.sort)[0...num_elites]
-  population[num_elites..-1] = offspring[0...(population.size - num_elites)]
+  population[num_elites..-1] = offspring
 end
 
 # Spawns a new individual containing a integer sequence of a given
