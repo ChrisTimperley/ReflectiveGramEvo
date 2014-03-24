@@ -41,6 +41,11 @@ def evolve(opts = {})
   # robustness is being used.
   opts[:evaluation_theads] = 1 if opts[:measure] == 'Local'
 
+  # Ensure that the number of threads is no greater than the number
+  # of individuals.
+  opts[:breeding_threads] = [opts[:breeding_threads], num_offspring].min
+  opts[:evaluation_threads] = [opts[:evaluation_threads], opts[:population_size]].min
+
   # Load the benchmark function samples.
   samples = JSON.load(File.open("#{File.dirname(__FILE__)}/samples.json", 'rb')).freeze
 
