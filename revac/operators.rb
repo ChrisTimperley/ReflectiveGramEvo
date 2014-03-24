@@ -25,7 +25,7 @@ def revac_mutate(random, table, index, h)
   return Array.new(table[0].length) do |i|
     window = (0...table.length).sort { |x, y| table[x][i] <=> table[y][i] }
     position = window.find_index(index)
-    window = window[position - h][i] .. window[position + h][i]
+    window = window[[position - h, 0].max][i] .. window[[position + h, table[0].length].max][i]
     random.rand(window)
   end
   
