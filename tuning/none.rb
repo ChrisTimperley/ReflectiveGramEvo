@@ -2,4 +2,4 @@
 
 require_relative 'base'
 
-tune('None')
+tune('None', 'none.csv')

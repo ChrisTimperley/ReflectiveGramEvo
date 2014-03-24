@@ -4,7 +4,7 @@ require_relative '../rge/algorithm'
 
 # Tunes a robustness measure using a competition-configured REVAC tuner on
 # a given benchmark function.
-def tune(measure, benchmark = 'keijzer-15')
+def tune(measure, output, benchmark = 'keijzer-15')
   revac([
       ['Population', 10..200],
       ['Mutation', 0.0001..0.5],
@@ -12,7 +12,7 @@ def tune(measure, benchmark = 'keijzer-15')
       ['Tournament', 2..10],
       ['Elites', 0.0..0.5]
     ],
-    output: 'testing.csv',
+    output: output,
   ) do |setup|
     evolve(
       silent: true,

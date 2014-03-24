@@ -2,4 +2,4 @@
 
 require_relative 'base'
 
-tune('Global')
+tune('Global', 'global.csv')

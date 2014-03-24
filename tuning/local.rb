@@ -2,4 +2,4 @@
 
 require_relative 'base'
 
-tune('Local')
+tune('Local', 'local.csv')
