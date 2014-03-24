@@ -5,6 +5,7 @@ require 'peach'
 # FOR NOW
 require_relative '../../ruby_to_robust/lib/to_robust'
 
+require_relative 'patches'
 require_relative 'errors'
 require_relative 'operators'
 require_relative 'evaluator'
@@ -47,11 +48,9 @@ def evolve(opts = {})
   vars = samples[opts[:benchmark]][0].length == 3 ? ['x', 'y'] : ['x']
 
   # Calculate division of labour for breeding.
-  batch_size = (num_offspring / opts[:breeding_threads].to_f).ceil
+  batches = (0...num_offspring).to_a.in_groups(opts[:breeding_threads])
   batches = Array.new(opts[:breeding_threads]) do |t|
-    start_at = t * batch_size
-    end_at = [num_offspring, start_at + batch_size].min
-    [t, start_at, end_at]
+    [t, batches[t][0], batches[t][-1] + 1]
   end
 
   # Construct the soft grammar.
@@ -87,6 +86,7 @@ def evolve(opts = {})
     # Keep generating individuals until we run out of space.
     offspring = Array.new(num_offspring, nil)
     batches.peach(opts[:breeding_threads]) do |t, start_at, end_at|
+
       until start_at == end_at
         
         # Select and clone two parents from the existing population.
@@ -126,6 +126,8 @@ def evolve(opts = {})
 
       end
     end
+
+    puts "Finished breeding."
 
     # Evaluate the newly created offspring and compare the best individual
     # against the best found so far during the evolution.
