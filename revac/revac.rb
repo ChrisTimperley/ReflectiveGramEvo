@@ -27,7 +27,7 @@ def revac_log(path, iteration, table, utility, buffer)
       utility: utility.clone,
       table: table.map { |v| v.clone }
     }
-    file.write(JSON.generate(buffer))
+    file.write(JSON.pretty_generate(buffer))
   end
   return buffer
 end
@@ -72,11 +72,13 @@ def revac(parameters, opts = {}, &algorithm)
     parameters.map { |p| random.rand(p.range) }
   end
 
-  # Compute the utility of each parameter vector.
+  # Compute the utility of each parameter vector, before finding and recording
+  # the best parameter vector.
   utility = table.map do |v|
     evaluate_vector(v, parameters, algorithm, opts[:runs])
-    puts "evaluated"
   end
+  best_utility, best_vector = utility.each_with_index.min
+  best_vector = table[best_vector]
 
   # Initialise evolution statistics.
   oldest = 0
@@ -96,7 +98,10 @@ def revac(parameters, opts = {}, &algorithm)
     # Select the N-best vectors from the table as the parents
     # of the next parameter vector.
     parents = (0...opts[:vectors]).sort { |x, y|
-      utility[x] <=> utility[y] }.take(opts[:parents])
+      utility[x] <=> utility[y]
+    }.take(opts[:parents]).map { |i| 
+      table[i]
+    }
 
     # Perform multi-parent crossover on the N parents to create
     # a proto-child vector.
@@ -107,7 +112,13 @@ def revac(parameters, opts = {}, &algorithm)
     # utility.
     table[oldest] = child
     table[oldest] = revac_mutate(random, table, oldest, opts[:h])
-    utility[child_index] = evaluate_vector(child, parameters, algorithm, opts[:runs])
+    utility[oldest] = evaluate_vector(child, parameters, algorithm, opts[:runs])
+
+    # Update the best vector if the child vector is an improvement.
+    if utility[oldest] < best_utility
+      best_vector = table[oldest]
+      best_utility = utility[oldest]
+    end
 
     # Update evolution statistics.
     oldest = (oldest + 1) % opts[:vectors]
@@ -122,7 +133,7 @@ def revac(parameters, opts = {}, &algorithm)
       output_buffer)
 
     # Debugging.
-    puts "Generation #{iterations}: utility.min"
+    puts "Generation #{iterations}: #{best_utility}"
 
   end
 
