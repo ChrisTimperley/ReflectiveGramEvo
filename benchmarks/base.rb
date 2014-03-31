@@ -7,11 +7,13 @@ require_relative '../rge/algorithm'
 # function.
 def run(measure, output_dir, setup)
 
-  #benchmarks = [
+  benchmarks = [
+    'keijzer-13',
+    'keijzer-16'
   #  'keijzer-12',
   #  'keijzer-14',
   #  'keijzer-15'
-  #]
+  ]
 
   # Ensure that the output directory exists.
   FileUtils.mkdir(output_dir) unless File.exists?(output_dir)
