@@ -7,11 +7,11 @@ require_relative '../rge/algorithm'
 # function.
 def run(measure, output_dir, setup)
 
-  benchmarks = [
-    'keijzer-12',
-    'keijzer-14',
-    'keijzer-15'
-  ]
+  #benchmarks = [
+  #  'keijzer-12',
+  #  'keijzer-14',
+  #  'keijzer-15'
+  #]
 
   # Ensure that the output directory exists.
   FileUtils.mkdir(output_dir) unless File.exists?(output_dir)
@@ -41,7 +41,10 @@ def run(measure, output_dir, setup)
 
     # Write the fitness values to a CSV log.
     CSV.open("#{output_dir}/#{benchmark}.csv", 'wb') do |csv|
-      csv << fitnesses
+      csv << ['Benchmark', 'Measure', 'Fitness']
+      fitnesses.each do |f|
+        csv << [benchmark, measure, f]
+      end
     end
 
   end
