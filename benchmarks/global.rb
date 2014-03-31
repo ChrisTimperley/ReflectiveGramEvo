@@ -2,7 +2,7 @@
 
 require_relative 'base'
 
-run('None',
+run('Global',
   'C:\Users\Steven\Documents\Code\ReflectiveGramEvo\benchmarks\global', {
   'Population' => 161,
   'Elites' => 0.440,
