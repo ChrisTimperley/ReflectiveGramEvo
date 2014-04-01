@@ -46,6 +46,15 @@ for (f in benchmarks) {
   fitness_local <- subset(results_both, Measure=="Local")$Fitness
   fitness_global <- subset(results_both, Measure=="Global")$Fitness
 
-  print(paste(f, " [None]:", , sep=""))
+  print(f)
+  print("None:")
+  print(quantile(fitness_none))
+  print("Local:")
+  print(quantile(fitness_local))
+  print("Global:")
+  print(quantile(fitness_global))
+  print("")
+  
+  #print(paste(f, " [None]:", , sep=""))
   
 }
