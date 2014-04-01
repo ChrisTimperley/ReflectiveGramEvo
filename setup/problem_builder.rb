@@ -4,11 +4,11 @@
 require 'json'
 
 num_samples = 20
-var_domain = -3.0 .. 3.0
+var_domain = -1.0 .. 1.0
 
 problems = {}
-problems['keijzer-13'] = lambda { |x, y| x**4 + x**3 + (y**2)/2 - y }
-problems['keijzer-16'] = lambda { |x, y| x**3 / 5 + y**3 / 2 - y - x }
+problems['koza-1'] = lambda { |x| x**4 + x**3 + x**2 + x }
+problems['koza-3'] = lambda { |x| x**6 - (2*x**4) + x**2 }
 
 problems.each do |name, f|
   problems[name] = Array.new(num_samples) do

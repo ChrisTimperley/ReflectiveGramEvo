@@ -2,22 +2,23 @@
 dir = "E:/Code/ReflectiveGramEvo/benchmarks/"
 
 results <- read.table(paste(dir, "global/keijzer-12.csv", sep=""), header=TRUE, sep=",")
-results <- rbind(results, read.table(paste(dir, "global/keijzer-13.csv", sep=""), header=TRUE, sep=","))
 results <- rbind(results, read.table(paste(dir, "global/keijzer-14.csv", sep=""), header=TRUE, sep=","))
 results <- rbind(results, read.table(paste(dir, "global/keijzer-15.csv", sep=""), header=TRUE, sep=","))
-results <- rbind(results, read.table(paste(dir, "global/keijzer-16.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "global/koza-1.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "global/koza-3.csv", sep=""), header=TRUE, sep=","))
 
 results <- rbind(results, read.table(paste(dir, "local/keijzer-12.csv", sep=""), header=TRUE, sep=","))
-results <- rbind(results, read.table(paste(dir, "local/keijzer-13.csv", sep=""), header=TRUE, sep=","))
 results <- rbind(results, read.table(paste(dir, "local/keijzer-14.csv", sep=""), header=TRUE, sep=","))
 results <- rbind(results, read.table(paste(dir, "local/keijzer-15.csv", sep=""), header=TRUE, sep=","))
-results <- rbind(results, read.table(paste(dir, "local/keijzer-16.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "local/koza-1.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "local/koza-3.csv", sep=""), header=TRUE, sep=","))
+
 
 results <- rbind(results, read.table(paste(dir, "none/keijzer-12.csv", sep=""), header=TRUE, sep=","))
-results <- rbind(results, read.table(paste(dir, "none/keijzer-13.csv", sep=""), header=TRUE, sep=","))
 results <- rbind(results, read.table(paste(dir, "none/keijzer-14.csv", sep=""), header=TRUE, sep=","))
 results <- rbind(results, read.table(paste(dir, "none/keijzer-15.csv", sep=""), header=TRUE, sep=","))
-results <- rbind(results, read.table(paste(dir, "none/keijzer-16.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "none/koza-1.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "none/koza-3.csv", sep=""), header=TRUE, sep=","))
 
 # Get a list of unique benchmark functions.
 benchmarks = unique(results$Benchmark)
@@ -34,5 +35,17 @@ for (f in benchmarks) {
   p_local <- wilcox.test(Fitness ~ Measure, data=rbind(results_none, results_local))$p.value
   
   print(c(f, p_global, p_local))
+  
+}
+
+# Calculate the distribution of fitness values for each benchmark.
+for (f in benchmarks) {
+  
+  results_both <- subset(results, Benchmark==f)
+  fitness_none <- subset(results_both, Measure=="None")$Fitness
+  fitness_local <- subset(results_both, Measure=="Local")$Fitness
+  fitness_global <- subset(results_both, Measure=="Global")$Fitness
+
+  print(paste(f, " [None]:", , sep=""))
   
 }

@@ -8,8 +8,8 @@ require_relative '../rge/algorithm'
 def run(measure, output_dir, setup)
 
   benchmarks = [
-    'keijzer-13',
-    'keijzer-16'
+    'koza-1',
+    'koza-3'
   #  'keijzer-12',
   #  'keijzer-14',
   #  'keijzer-15'

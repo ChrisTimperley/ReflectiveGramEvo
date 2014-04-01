@@ -3,7 +3,7 @@
 require_relative 'base'
 
 run('Global',
-  'C:\Users\Steven\Documents\Code\ReflectiveGramEvo\benchmarks\global', {
+  'global', {
   'Population' => 161,
   'Elites' => 0.440,
   'Tournament' => 2,

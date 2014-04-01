@@ -3,7 +3,7 @@
 require_relative 'base'
 
 run('None',
-  'C:\Users\Steven\Documents\Code\ReflectiveGramEvo\benchmarks\none', {
+  'none', {
   'Population' => 189,
   'Elites' => 0.438,
   'Tournament' => 2,
