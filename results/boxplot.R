@@ -1,23 +1,23 @@
 # Collate the results from each of the experiments into a single data frame.
-results <- read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/global/keijzer-12.csv", header=TRUE, sep=",")
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/global/keijzer-13.csv", header=TRUE, sep=","))
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/global/keijzer-14.csv", header=TRUE, sep=","))
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/global/keijzer-15.csv", header=TRUE, sep=","))
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/global/keijzer-16.csv", header=TRUE, sep=","))
+dir = "E:/Code/ReflectiveGramEvo/benchmarks/"
 
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/local/keijzer-12.csv", header=TRUE, sep=","))
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/local/keijzer-13.csv", header=TRUE, sep=","))
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/local/keijzer-14.csv", header=TRUE, sep=","))
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/local/keijzer-15.csv", header=TRUE, sep=","))
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/local/keijzer-16.csv", header=TRUE, sep=","))
+results <- read.table(paste(dir, "global/keijzer-12.csv", sep=""), header=TRUE, sep=",")
+results <- rbind(results, read.table(paste(dir, "global/keijzer-13.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "global/keijzer-14.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "global/keijzer-15.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "global/keijzer-16.csv", sep=""), header=TRUE, sep=","))
 
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/none/keijzer-12.csv", header=TRUE, sep=","))
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/none/keijzer-13.csv", header=TRUE, sep=","))
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/none/keijzer-14.csv", header=TRUE, sep=","))
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/none/keijzer-15.csv", header=TRUE, sep=","))
-results <- rbind(results, read.table("C:/Users/Steven/Documents/Code/ReflectiveGramEvo/benchmarks/none/keijzer-16.csv", header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "local/keijzer-12.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "local/keijzer-13.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "local/keijzer-14.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "local/keijzer-15.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "local/keijzer-16.csv", sep=""), header=TRUE, sep=","))
 
-print(results)
+results <- rbind(results, read.table(paste(dir, "none/keijzer-12.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "none/keijzer-13.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "none/keijzer-14.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "none/keijzer-15.csv", sep=""), header=TRUE, sep=","))
+results <- rbind(results, read.table(paste(dir, "none/keijzer-16.csv", sep=""), header=TRUE, sep=","))
 
 # Seperate the results by benchmark.
 k12 <- subset(results, Benchmark=="keijzer-12")
