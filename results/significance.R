@@ -1,3 +1,40 @@
+##########################################################################
+##########################################################################
+#
+# Computes the Vargha-Delaney A measure for two populations a and b.
+#
+# Equation numbers below refer to the paper:
+# @article{vargha2000critique,
+#  title={A critique and improvement of the CL common language effect size
+#               statistics of McGraw and Wong},
+#  author={Vargha, A. and Delaney, H.D.},
+#  journal={Journal of Educational and Behavioral Statistics},
+#  volume={25},
+#  number={2},
+#  pages={101--132},
+#  year={2000},
+#  publisher={Sage Publications}
+# }
+# 
+# a: a vector of real numbers
+# b: a vector of real numbers 
+# Returns: A real number between 0 and 1 
+AMeasure <- function(a,b){
+
+    # Compute the rank sum (Eqn 13)
+    r = rank(c(a,b))
+    
+    
+    r1 = sum(r[seq_along(a)])
+
+    # Compute the measure (Eqn 14) 
+    m = length(a)
+    n = length(b)
+    A = (r1/m - (m+1)/2)/n
+
+    A
+}
+
 # Collate the results from each of the experiments into a single data frame.
 dir = "E:/Code/ReflectiveGramEvo/benchmarks/"
 
@@ -34,7 +71,11 @@ for (f in benchmarks) {
   p_global <- wilcox.test(Fitness ~ Measure, data=rbind(results_none, results_global))$p.value
   p_local <- wilcox.test(Fitness ~ Measure, data=rbind(results_none, results_local))$p.value
   
-  print(c(f, p_global, p_local))
+  print(c(f,
+          p_global, AMeasure(results_none$Fitness, results_global$Fitness),
+          p_local, AMeasure(results_none$Fitness, results_local$Fitness)
+          )
+        )
   
 }
 
